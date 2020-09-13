@@ -168,6 +168,7 @@ async fn find_service_repositories(
 }
 
 fn walk_repository(root_path: &str, repos: &mut Arc<Mutex<Vec<LocalRepository>>>) -> Result<()> {
+    let root_path = fs::canonicalize(&root_path)?;
     let res = fs::read_dir(root_path);
     if let Err(e) = res {
         error!("{} path:{:?}", e, root_path);
@@ -401,7 +402,6 @@ mod tests {
     fn read_dir() {
         env_logger::try_init();
         let root_path = "/home/ma2/repos";
-        let root_path = canonicalize(root_path).unwrap();
         let result: Vec<LocalRepository> = vec![];
         let mut result: Arc<Mutex<Vec<LocalRepository>>> = Arc::new(Mutex::new(result));
         walk_repository(root_path.to_str().unwrap(), &mut result).unwrap();
